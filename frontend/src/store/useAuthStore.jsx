@@ -16,5 +16,8 @@ export const useAuthStore = create((set, get) => ({
         } catch (error) {
             console.error(error)
         }
+    },
+    clearUser: () => {
+        set((state) => ({...state, user: undefined}))
     }
 }))

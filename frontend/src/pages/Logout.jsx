@@ -1,14 +1,22 @@
 import { useEffect } from "react"
+import { useAuthStore } from "../store/useAuthStore"
+import { useNavigate } from "react-router-dom"
 
 const Logout = () => {
+    const { clearUser } = useAuthStore()
+    const navigate = useNavigate()
     useEffect(() => {
         const logUserOut = async () => {
-            // пишем фетч с await на /auth/logout
-            // добавляем в AuthStore метод clearUser и вызываем его
-            // navigate на "/signin"
+            await fetch("https://shiny-broccoli-7r4gg65p9gr2xxr6-3000.app.github.dev/auth/logout", {
+                credentials: "include"
+            })
+            clearUser()
+            navigate("/signin")
         }
         logUserOut()
     }, [])
+
+    return <></>
 }
 
 export default Logout
