@@ -1,23 +1,32 @@
-import { Outlet, useNavigate } from "react-router-dom"
+// components/AuthProvider.jsx
+import { useEffect, useState } from 'react'
+import { Outlet, useNavigate } from 'react-router-dom'
 import { useAuthStore } from "../store/useAuthStore"
-import { useEffect } from "react"
 
-const AuthProvider = () => {
-    const {user, checkAuth} = useAuthStore()
-    const navigate = useNavigate()
+function AuthProvider() {
+  const navigate = useNavigate()
+  const { user, checkAuth } = useAuthStore()
+  const [hasChecked, setHasChecked] = useState(false)
 
-    // на первом рендере компонента
-    useEffect(() => {
-        const init = async () => {
-            // делать запрос на проверку авторизации
-            await checkAuth()
-        }
-        init()
-    }, [])
+  useEffect(() => {
+    const performCheck = async () => {
+      await checkAuth()
+      setHasChecked(true)
+    }
+    performCheck()
+  }, [checkAuth])
 
-    if (!user) navigate("/signin")
+  useEffect(() => {
+    if (hasChecked && !user) {
+      navigate('/signin')
+    }
+  }, [hasChecked, user, navigate])
 
-    return <Outlet />
+  if (!user || !hasChecked) {
+    return null
+  }
+
+  return <Outlet />
 }
 
 export default AuthProvider

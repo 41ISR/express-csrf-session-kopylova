@@ -86,6 +86,16 @@ app.post("/auth/signin", (req, res) => {
     res.status(200).json(user)
 })
 
+app.post("/auth/logout", (req, res) => {
+    req.session.destroy((err) => {
+        if (err) {
+            return res.status(500).json({ error: "Logout failed" })
+        }
+        res.clearCookie("sessionId") // Use the same name from your cookie config
+        res.status(200).json({ message: "Logged out successfully" })
+    })
+})
+
 app.listen("3000", () => {
     console.log("Порт3000")
 })

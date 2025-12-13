@@ -1,10 +1,20 @@
 import { useState } from "react"
+import { useNavigate } from "react-router-dom"
+import { useAuthStore } from "../store/useAuthStore"
 
 const Index = () => {
     const [clicks, setClicks] = useState(0)
+      const navigate = useNavigate()
+  const { signout } = useAuthStore()
     const handleClick = () => {
         setClicks((val) => val + 1)
     }
+
+  const handleLogout = async () => {
+    await signout()
+    navigate('/signin')
+  }
+
     return (
         <div className="container">
 
@@ -12,7 +22,7 @@ const Index = () => {
                 <h1>🎮 Кликер Игра</h1>
                 <div className="user-info">
                     <span><strong>Имя пользователя</strong></span>
-                    <button className="logout-btn">Выйти</button>
+                    <button className="logout-btn" onClick={handleLogout}>Выйти</button>
                 </div>
             </div>
             <div className="game-area">
