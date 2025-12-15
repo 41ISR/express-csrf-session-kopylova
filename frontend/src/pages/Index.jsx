@@ -1,10 +1,33 @@
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
+import { Navigate, useNavigate } from "react-router-dom"
 
 const Index = () => {
+    const navigate = useNavigate()
+    const formRef = useRef(null)
     const [clicks, setClicks] = useState(0)
-    const handleClick = () => {
+    const clickRef = useRef(null)
+    useEffect (() =>{
+        const interval = setInterval(() => {
+            formRef.current && handleSubmit()
+        }, 5000)
+        return () => {clearInterval(interval)}
+    }, [])
+
+    useEffect (() => {
+        clickRef.current = clicks
+    }, [clicks])
+const handleClick = () => {
         setClicks((val) => val + 1)
-    }
+    } 
+
+const handleLogout = () => {
+    navigate("/logout")
+}
+
+const handleSubmit = (e) => {
+    
+}
+
     return (
         <div className="container">
 
@@ -12,7 +35,7 @@ const Index = () => {
                 <h1>🎮 Кликер Игра</h1>
                 <div className="user-info">
                     <span><strong>Имя пользователя</strong></span>
-                    <button className="logout-btn">Выйти</button>
+                    <button onClick={handleLogout} className="logout-btn">Выйти</button>
                 </div>
             </div>
             <div className="game-area">
@@ -20,7 +43,9 @@ const Index = () => {
                 <div className="click-counter">
                     <h2>Твои клики</h2>
                     <div className="clicks-display">{clicks}</div>
-                    <button className="click-button" onClick={handleClick}>👆 КЛИКНИ!</button>
+                    <form onSubmit={(e) => e.preventDefault()} ref={formRef}>
+                        <button className="click-button" onClick={handleClick}>👆 КЛИКНИ!</button>
+                    </form>
                 </div>
 
                 <div className="leaderboard">
