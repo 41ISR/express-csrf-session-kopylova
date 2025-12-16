@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState } from "react"
 import { Navigate, useNavigate } from "react-router-dom"
+import { useAuthStore } from "../store/useAuthStore"
 
 const Index = () => {
     const navigate = useNavigate()
     const formRef = useRef(null)
-    const [clicks, setClicks] = useState(0)
+    const {user} = useAuthStore()
+    const [clicks, setClicks] = useState(user.clicks)
     const clickRef = useRef(null)
     useEffect (() =>{
         const interval = setInterval(() => {
@@ -12,6 +14,14 @@ const Index = () => {
         }, 5000)
         return () => {clearInterval(interval)}
     }, [])
+
+    useEffect (() => {
+        clickRef.current = clicks
+    }, [clicks])
+
+    useEffect (() => {
+        setClicks(user.user.clicks)
+    }, [user])
 
     useEffect (() => {
         clickRef.current = clicks
@@ -24,8 +34,23 @@ const handleLogout = () => {
     navigate("/logout")
 }
 
-const handleSubmit = (e) => {
-    
+const handleSubmit = async () => {
+    try {
+        const res = await fetch("https://bug-free-space-palm-tree-4jw4vg55g646hqww9-3001.app.github.dev/click",
+        {
+            method: "POST",
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({clicks: clickRef.current})
+        }
+        )
+        const data = await res.json()
+        console.log(data)
+    } catch (error) {
+        console.error(error)
+    }
 }
 
     return (

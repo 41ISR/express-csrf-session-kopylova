@@ -7,7 +7,7 @@ const Logout = () => {
     const navigate = useNavigate()
     useEffect(() => {
         const logUserOut = async () => {
-            await fetch("https://shiny-broccoli-7r4gg65p9gr2xxr6-3000.app.github.dev/auth/logout", {
+            await fetch("https://bug-free-space-palm-tree-4jw4vg55g646hqww9-3001.app.github.dev/auth/logout", {
                 credentials: "include"
             })
             clearUser()
