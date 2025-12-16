@@ -38,7 +38,8 @@ app.get("/auth/me", (req, res) => {
     if (req.session.userId) {
         return res.status(200).json({logged: true, user: {
             userId: req.session.userId,
-            email: req.session.email
+            email: req.session.email,
+            clicks: req.session.clicks
         }})
     }
 
@@ -82,6 +83,7 @@ app.post("/auth/signin", (req, res) => {
 
     req.session.email = user.email
     req.session.userId = user.id
+    req.session.clicks = user.clicks
 
     res.status(200).json(user)
 })
@@ -94,10 +96,16 @@ app.post("/auth/logout", (req, res) => {
     })
 })
 
-// 1. Кинуть юзера на /logout
-// 2. Там в useEffect сделать запрос на /auth/logout и очистить
-// user в authStore
+app.post("/click", (req, res) => {
+    const {clicks} = req.body
+    const updateClicks = db
+        .prepare("UPDATE users SET clicks = ? WHERE id = ? ")
+        .run(clicks, req.session.userId)
+        
+        console.log(updateClicks)
+    res.status(200).json({message: "Число кликов обновлено"})
+})
 
-app.listen("3000", () => {
+app.listen("3001", () => {
     console.log("Порт3000")
 })
